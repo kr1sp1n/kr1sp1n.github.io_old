@@ -2,17 +2,23 @@
 'use strict';
 
 require('normalize-css');
-
 const yo = require('yo-yo');
 
-const el = list([
-  'grizzly',
-  'polar',
-  'brown',
-]);
+const init = function () {
+  console.log('init');
 
-function list(items) {
-  return (function () {
+  window.localStorage.setItem('bears', JSON.stringify([
+    'grizzly',
+    'polar',
+    'brown',
+  ]));
+
+  const bears = JSON.parse(window.localStorage.getItem('bears'));
+
+  const el = list(bears);
+
+  function list(items) {
+    return (function () {
           function appendChild (el, childs) {
             for (var i = 0; i < childs.length; i++) {
               var node = childs[i];
@@ -41,10 +47,10 @@ function list(items) {
             }
           }
           var bel0 = document.createElement("ul")
-appendChild(bel0, ["\n    ",arguments[0],"\n  "])
+appendChild(bel0, ["\n      ",arguments[0],"\n    "])
           return bel0
         }(items.map(function (item) {
-      return (function () {
+        return (function () {
           function appendChild (el, childs) {
             for (var i = 0; i < childs.length; i++) {
               var node = childs[i];
@@ -76,10 +82,17 @@ appendChild(bel0, ["\n    ",arguments[0],"\n  "])
 appendChild(bel0, [arguments[0]])
           return bel0
         }(item));
-    })));
-}
+      })));
+  }
 
-document.body.appendChild(el);
+  document.body.appendChild(el);
+};
+
+if (window.localStorage.isLoaded) {
+  window.localStorage.isLoaded(init);
+} else {
+  init.call(this);
+}
 
 },{"normalize-css":4,"yo-yo":6}],2:[function(require,module,exports){
 var inserted = [];
