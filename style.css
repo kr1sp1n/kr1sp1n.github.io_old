@@ -10,6 +10,46 @@ header {
   text-align: center;
 }
 
+a {
+  color: white;
+  background: blue;
+  text-decoration: none;
+}
+
+.content {
+  padding: 1em;
+}
+
 .login {
   display: inline;
+}
+
+.messages {
+  list-style: none;
+}
+
+.message {
+  padding: 0.5em;
+}
+
+.message:hover {
+  color: black !important;
+  background: grey;
+}
+
+.message.read:hover .from {
+  color: black;
+}
+
+.message .from {
+  color: white;
+  font-weight: bold;
+}
+
+.message.read .from {
+  color: grey;
+}
+
+.message.read {
+  color: grey;
 }

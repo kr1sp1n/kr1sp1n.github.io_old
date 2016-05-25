@@ -4,11 +4,27 @@ const yo = require('yo-yo');
 const header = require('./header');
 const message = require('./message');
 const update = require('./update');
+const inbox = require('./inbox');
 
 module.exports = function render(state) {
   const actions = {
+    toggleMessage: function (id) {
+      return function () {
+        state.inbox.messages.forEach((message) => {
+          if (message.id === id) {
+            message.expanded = !message.expanded;
+            if (message.status === 'unread') {
+              message.status = 'read';
+              state.inbox.unread -= 1;
+            }
+          }
+        });
+        update('.app', render(state));
+      };
+    },
+
     login: function (x) {
-      state.name = 'Lisa';
+      state.user.name = 'Lisa';
       update('.app', render(state));
     },
 
@@ -16,9 +32,13 @@ module.exports = function render(state) {
 
     },
   };
+
+  //${header(state, actions)}
+  //${message(state, actions)}
+
   return yo`<div class="app">
-    ${header(state, actions)}
-    ${message(state, actions)}
-    <div>Hello ${state.name}</div>
+    <div class="content">
+      ${inbox(state.inbox, actions)}
+    </div>
   `;
 };

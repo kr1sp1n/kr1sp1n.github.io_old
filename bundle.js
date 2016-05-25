@@ -670,13 +670,319 @@ module.exports = function header(state, actions) {
           }
           var bel1 = document.createElement("header")
 var bel0 = document.createElement("span")
-appendChild(bel0, ["kr1sp1n"])
-appendChild(bel1, [bel0,arguments[0]])
+appendChild(bel0, ["Hello ",arguments[0]])
+appendChild(bel1, [bel0,arguments[1]])
           return bel1
-        }(login(state, actions)));
+        }(state.user.name,login(state, actions)));
 };
 
-},{"./login":12,"yo-yo":8}],11:[function(require,module,exports){
+},{"./login":13,"yo-yo":8}],11:[function(require,module,exports){
+'use strict';
+const yo = require('yo-yo');
+
+function parseUser(user) {
+  var found = user.match(/(.*) <(.*)>/i);
+  if (found) {
+    const name = found[1];
+    const email = found[2];
+
+    // return yo`<a href="mailto://${email}">${name}</a>`;
+    return name;
+  } else {
+    return user;
+  }
+}
+
+function trimContent(content) {
+  if (content.length > 60) {
+    return content.substr(0, 60) + ' ...';
+  } else {
+    return content;
+  }
+}
+
+function messageList(items, actions) {
+  return (function () {
+          function appendChild (el, childs) {
+            for (var i = 0; i < childs.length; i++) {
+              var node = childs[i];
+              if (Array.isArray(node)) {
+                appendChild(el, node)
+                continue
+              }
+              if (typeof node === "number" ||
+                typeof node === "boolean" ||
+                node instanceof Date ||
+                node instanceof RegExp) {
+                node = node.toString()
+              }
+
+              if (typeof node === "string") {
+                if (el.lastChild && el.lastChild.nodeName === "#text") {
+                  el.lastChild.nodeValue += node
+                  continue
+                }
+                node = document.createTextNode(node)
+              }
+
+              if (node && node.nodeType) {
+                el.appendChild(node)
+              }
+            }
+          }
+          var bel0 = document.createElement("ul")
+bel0.setAttribute("class", "messages")
+appendChild(bel0, ["\n    ",arguments[0],"\n  "])
+          return bel0
+        }(items.map(function (item) {
+      var expandedContent = '';
+      var header = (function () {
+          function appendChild (el, childs) {
+            for (var i = 0; i < childs.length; i++) {
+              var node = childs[i];
+              if (Array.isArray(node)) {
+                appendChild(el, node)
+                continue
+              }
+              if (typeof node === "number" ||
+                typeof node === "boolean" ||
+                node instanceof Date ||
+                node instanceof RegExp) {
+                node = node.toString()
+              }
+
+              if (typeof node === "string") {
+                if (el.lastChild && el.lastChild.nodeName === "#text") {
+                  el.lastChild.nodeValue += node
+                  continue
+                }
+                node = document.createTextNode(node)
+              }
+
+              if (node && node.nodeType) {
+                el.appendChild(node)
+              }
+            }
+          }
+          var bel2 = document.createElement("div")
+var bel0 = document.createElement("span")
+bel0.setAttribute("class", "from")
+appendChild(bel0, [arguments[0]])
+var bel1 = document.createElement("span")
+bel1.setAttribute("class", "content")
+appendChild(bel1, [arguments[1]])
+appendChild(bel2, ["\n        ",bel0,"\n        ",bel1,"\n      "])
+          return bel2
+        }(parseUser(item.from),trimContent(item.content)));
+
+      if (item.expanded) {
+        expandedContent = (function () {
+          function appendChild (el, childs) {
+            for (var i = 0; i < childs.length; i++) {
+              var node = childs[i];
+              if (Array.isArray(node)) {
+                appendChild(el, node)
+                continue
+              }
+              if (typeof node === "number" ||
+                typeof node === "boolean" ||
+                node instanceof Date ||
+                node instanceof RegExp) {
+                node = node.toString()
+              }
+
+              if (typeof node === "string") {
+                if (el.lastChild && el.lastChild.nodeName === "#text") {
+                  el.lastChild.nodeValue += node
+                  continue
+                }
+                node = document.createTextNode(node)
+              }
+
+              if (node && node.nodeType) {
+                el.appendChild(node)
+              }
+            }
+          }
+          var bel0 = document.createElement("div")
+appendChild(bel0, [arguments[0]])
+          return bel0
+        }(item.content));
+        header = (function () {
+          function appendChild (el, childs) {
+            for (var i = 0; i < childs.length; i++) {
+              var node = childs[i];
+              if (Array.isArray(node)) {
+                appendChild(el, node)
+                continue
+              }
+              if (typeof node === "number" ||
+                typeof node === "boolean" ||
+                node instanceof Date ||
+                node instanceof RegExp) {
+                node = node.toString()
+              }
+
+              if (typeof node === "string") {
+                if (el.lastChild && el.lastChild.nodeName === "#text") {
+                  el.lastChild.nodeValue += node
+                  continue
+                }
+                node = document.createTextNode(node)
+              }
+
+              if (node && node.nodeType) {
+                el.appendChild(node)
+              }
+            }
+          }
+          var bel0 = document.createElement("span")
+bel0.setAttribute("class", "from")
+appendChild(bel0, [arguments[0]])
+          return bel0
+        }(parseUser(item.from)));
+      }
+
+      return (function () {
+          function appendChild (el, childs) {
+            for (var i = 0; i < childs.length; i++) {
+              var node = childs[i];
+              if (Array.isArray(node)) {
+                appendChild(el, node)
+                continue
+              }
+              if (typeof node === "number" ||
+                typeof node === "boolean" ||
+                node instanceof Date ||
+                node instanceof RegExp) {
+                node = node.toString()
+              }
+
+              if (typeof node === "string") {
+                if (el.lastChild && el.lastChild.nodeName === "#text") {
+                  el.lastChild.nodeValue += node
+                  continue
+                }
+                node = document.createTextNode(node)
+              }
+
+              if (node && node.nodeType) {
+                el.appendChild(node)
+              }
+            }
+          }
+          var bel0 = document.createElement("li")
+bel0["onclick"] = arguments[0]
+bel0.setAttribute("class", "message " + arguments[1])
+appendChild(bel0, ["\n        ",arguments[2],"\n        ",arguments[3],"\n      "])
+          return bel0
+        }(actions.toggleMessage(item.id),item.status,header,expandedContent));
+    })));
+}
+
+module.exports = function inbox(state, actions) {
+  var statusHeader = (function () {
+          function appendChild (el, childs) {
+            for (var i = 0; i < childs.length; i++) {
+              var node = childs[i];
+              if (Array.isArray(node)) {
+                appendChild(el, node)
+                continue
+              }
+              if (typeof node === "number" ||
+                typeof node === "boolean" ||
+                node instanceof Date ||
+                node instanceof RegExp) {
+                node = node.toString()
+              }
+
+              if (typeof node === "string") {
+                if (el.lastChild && el.lastChild.nodeName === "#text") {
+                  el.lastChild.nodeValue += node
+                  continue
+                }
+                node = document.createTextNode(node)
+              }
+
+              if (node && node.nodeType) {
+                el.appendChild(node)
+              }
+            }
+          }
+          var bel0 = document.createElement("div")
+appendChild(bel0, [arguments[0]," unread messages"])
+          return bel0
+        }(state.unread));
+  if (state.unread === 0) statusHeader = (function () {
+          function appendChild (el, childs) {
+            for (var i = 0; i < childs.length; i++) {
+              var node = childs[i];
+              if (Array.isArray(node)) {
+                appendChild(el, node)
+                continue
+              }
+              if (typeof node === "number" ||
+                typeof node === "boolean" ||
+                node instanceof Date ||
+                node instanceof RegExp) {
+                node = node.toString()
+              }
+
+              if (typeof node === "string") {
+                if (el.lastChild && el.lastChild.nodeName === "#text") {
+                  el.lastChild.nodeValue += node
+                  continue
+                }
+                node = document.createTextNode(node)
+              }
+
+              if (node && node.nodeType) {
+                el.appendChild(node)
+              }
+            }
+          }
+          var bel0 = document.createElement("div")
+appendChild(bel0, ["no unread messages"])
+          return bel0
+        }());
+  return (function () {
+          function appendChild (el, childs) {
+            for (var i = 0; i < childs.length; i++) {
+              var node = childs[i];
+              if (Array.isArray(node)) {
+                appendChild(el, node)
+                continue
+              }
+              if (typeof node === "number" ||
+                typeof node === "boolean" ||
+                node instanceof Date ||
+                node instanceof RegExp) {
+                node = node.toString()
+              }
+
+              if (typeof node === "string") {
+                if (el.lastChild && el.lastChild.nodeName === "#text") {
+                  el.lastChild.nodeValue += node
+                  continue
+                }
+                node = document.createTextNode(node)
+              }
+
+              if (node && node.nodeType) {
+                el.appendChild(node)
+              }
+            }
+          }
+          var bel1 = document.createElement("div")
+bel1.setAttribute("class", "inbox")
+var bel0 = document.createElement("div")
+appendChild(bel0, [arguments[0]])
+appendChild(bel1, ["\n    ",arguments[1],"\n    ",bel0,"\n  "])
+          return bel1
+        }(messageList(state.messages, actions),statusHeader));
+};
+
+},{"yo-yo":8}],12:[function(require,module,exports){
 'use strict';
 
 require('normalize-css');
@@ -687,11 +993,28 @@ const update = require('./update');
 const render = require('./render');
 
 const init = function () {
-  const state = {
-    name: 'Krispin',
+  // load state from local storage
+  var state = window.localStorage.getItem('state');
 
-    // weather: JSON.parse(window.localStorage.getItem('weather')),
-  };
+  if (!state) {
+    // generate default state if no state in local storage
+    state = {
+      user: {
+        name: 'Krispin',
+      },
+      version: '1.0.0',
+      status: 'offline',
+      inbox: {
+        unread: 2,
+        messages: [
+          { id: '1', expanded: false, status: 'unread', from: 'Lisa <lisabogen@googlemail.com>', content: 'Hallo mein Liebling. Hiermit schreibe ich dir eine schöne kleine Nachricht und wollte dir nur sagen, dass ich dich unglaublich liebe!!!!!' },
+          { id: '2', expanded: false, status: 'unread', from: 'Burki', content: 'Ey Keule. Nur mal so!' },
+          { id: '3', expanded: false, status: 'read', from: 'Patrick', content: 'Na, was los? Ich wollte mal frage, ob ihr vielleicht zu meinem Geburtstag kommen wollt.' },
+        ],
+      },
+    };
+  }
+
   const app = render(state);
   document.body.appendChild(app);
 };
@@ -702,7 +1025,7 @@ if (window.localStorage.isLoaded) {
   init.call(this);
 }
 
-},{"./render":14,"./update":15,"global/document":2,"global/window":3,"normalize-css":6,"yo-yo":8}],12:[function(require,module,exports){
+},{"./render":15,"./update":16,"global/document":2,"global/window":3,"normalize-css":6,"yo-yo":8}],13:[function(require,module,exports){
 'use strict';
 const yo = require('yo-yo');
 
@@ -747,7 +1070,7 @@ appendChild(bel2, ["\n    ",bel0,"\n    ",bel1,"\n  "])
         }(actions.login));
 };
 
-},{"yo-yo":8}],13:[function(require,module,exports){
+},{"yo-yo":8}],14:[function(require,module,exports){
 'use strict';
 
 // send message to me
@@ -799,18 +1122,34 @@ appendChild(bel5, ["\n    ",bel0,"\n    ",bel2,"\n    ",bel4,"\n  "])
         }(actions.sendMessage));
 };
 
-},{"yo-yo":8}],14:[function(require,module,exports){
+},{"yo-yo":8}],15:[function(require,module,exports){
 'use strict';
 
 const yo = require('yo-yo');
 const header = require('./header');
 const message = require('./message');
 const update = require('./update');
+const inbox = require('./inbox');
 
 module.exports = function render(state) {
   const actions = {
+    toggleMessage: function (id) {
+      return function () {
+        state.inbox.messages.forEach((message) => {
+          if (message.id === id) {
+            message.expanded = !message.expanded;
+            if (message.status === 'unread') {
+              message.status = 'read';
+              state.inbox.unread -= 1;
+            }
+          }
+        });
+        update('.app', render(state));
+      };
+    },
+
     login: function (x) {
-      state.name = 'Lisa';
+      state.user.name = 'Lisa';
       update('.app', render(state));
     },
 
@@ -818,6 +1157,10 @@ module.exports = function render(state) {
 
     },
   };
+
+  //${header(state, actions)}
+  //${message(state, actions)}
+
   return (function () {
           function appendChild (el, childs) {
             for (var i = 0; i < childs.length; i++) {
@@ -849,13 +1192,14 @@ module.exports = function render(state) {
           var bel1 = document.createElement("div")
 bel1.setAttribute("class", "app")
 var bel0 = document.createElement("div")
-appendChild(bel0, ["Hello ",arguments[0]])
-appendChild(bel1, ["\n    ",arguments[1],"\n    ",arguments[2],"\n    ",bel0,"\n  "])
+bel0.setAttribute("class", "content")
+appendChild(bel0, ["\n      ",arguments[0],"\n    "])
+appendChild(bel1, ["\n    ",bel0,"\n  "])
           return bel1
-        }(state.name,header(state, actions),message(state, actions)));
+        }(inbox(state.inbox, actions)));
 };
 
-},{"./header":10,"./message":13,"./update":15,"yo-yo":8}],15:[function(require,module,exports){
+},{"./header":10,"./inbox":11,"./message":14,"./update":16,"yo-yo":8}],16:[function(require,module,exports){
 const document = require('global/document');
 const yo = require('yo-yo');
 
@@ -867,4 +1211,4 @@ module.exports = function update(f, t) {
   yo.update(f, t);
 };
 
-},{"global/document":2,"yo-yo":8}]},{},[11]);
+},{"global/document":2,"yo-yo":8}]},{},[12]);
