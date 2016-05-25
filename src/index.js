@@ -16,6 +16,7 @@ const init = function () {
     state = {
       user: {
         name: 'Krispin',
+        authenticated: false,
       },
       version: '1.0.0',
       status: 'offline',

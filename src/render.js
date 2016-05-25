@@ -35,10 +35,11 @@ module.exports = function render(state) {
 
   //${header(state, actions)}
   //${message(state, actions)}
-
+  var content = '';
+  if (state.user.authenticated) content = inbox(state.inbox, actions);
   return yo`<div class="app">
     <div class="content">
-      ${inbox(state.inbox, actions)}
+      ${content}
     </div>
   `;
 };

@@ -1001,6 +1001,7 @@ const init = function () {
     state = {
       user: {
         name: 'Krispin',
+        authenticated: false,
       },
       version: '1.0.0',
       status: 'offline',
@@ -1160,7 +1161,8 @@ module.exports = function render(state) {
 
   //${header(state, actions)}
   //${message(state, actions)}
-
+  var content = '';
+  if (state.user.authenticated) content = inbox(state.inbox, actions);
   return (function () {
           function appendChild (el, childs) {
             for (var i = 0; i < childs.length; i++) {
@@ -1196,7 +1198,7 @@ bel0.setAttribute("class", "content")
 appendChild(bel0, ["\n      ",arguments[0],"\n    "])
 appendChild(bel1, ["\n    ",bel0,"\n  "])
           return bel1
-        }(inbox(state.inbox, actions)));
+        }(content));
 };
 
 },{"./header":10,"./inbox":11,"./message":14,"./update":16,"yo-yo":8}],16:[function(require,module,exports){
