@@ -1,11 +1,10 @@
 'use strict';
 
 require('normalize-css');
+
 const yo = require('yo-yo');
 const document = require('global/document');
 const window = require('global/window');
-const update = require('./update');
-const render = require('./render');
 
 const init = function () {
   // load state from local storage
@@ -16,7 +15,7 @@ const init = function () {
     state = {
       user: {
         name: 'Krispin',
-        authenticated: false,
+        authenticated: true,
       },
       version: '1.0.0',
       status: 'offline',
@@ -31,8 +30,9 @@ const init = function () {
     };
   }
 
-  const app = render(state);
-  document.body.appendChild(app);
+  const app = require('./app');
+  document.body.appendChild(app(state));
+
 };
 
 if (window.localStorage.isLoaded) {

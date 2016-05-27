@@ -52,6 +52,60 @@ module.exports = function (css) {
 };
 
 },{}],5:[function(require,module,exports){
+/*!
+ * is-plain-object <https://github.com/jonschlinkert/is-plain-object>
+ *
+ * Copyright (c) 2014-2015, Jon Schlinkert.
+ * Licensed under the MIT License.
+ */
+
+'use strict';
+
+var isObject = require('isobject');
+
+function isObjectObject(o) {
+  return isObject(o) === true
+    && Object.prototype.toString.call(o) === '[object Object]';
+}
+
+module.exports = function isPlainObject(o) {
+  var ctor,prot;
+  
+  if (isObjectObject(o) === false) return false;
+  
+  // If has modified constructor
+  ctor = o.constructor;
+  if (typeof ctor !== 'function') return false;
+  
+  // If has modified prototype
+  prot = ctor.prototype;
+  if (isObjectObject(prot) === false) return false;
+  
+  // If constructor does not have an Object-specific method
+  if (prot.hasOwnProperty('isPrototypeOf') === false) {
+    return false;
+  }
+  
+  // Most likely a plain Object
+  return true;
+};
+
+},{"isobject":6}],6:[function(require,module,exports){
+/*!
+ * isobject <https://github.com/jonschlinkert/isobject>
+ *
+ * Copyright (c) 2014-2015, Jon Schlinkert.
+ * Licensed under the MIT License.
+ */
+
+'use strict';
+
+module.exports = function isObject(val) {
+  return val != null && typeof val === 'object'
+    && !Array.isArray(val);
+};
+
+},{}],7:[function(require,module,exports){
 // Create a range object for efficently rendering strings to elements.
 var range;
 
@@ -550,16 +604,289 @@ function morphdom(fromNode, toNode, options) {
 
 module.exports = morphdom;
 
-},{}],6:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
+/**
+* Create an event emitter with namespaces
+* @name createNamespaceEmitter
+* @example
+* var emitter = require('./index')()
+*
+* emitter.on('*', function () {
+*   console.log('all events emitted', this.event)
+* })
+*
+* emitter.on('example', function () {
+*   console.log('example event emitted')
+* })
+*/
+module.exports = function createNamespaceEmitter () {
+  var emitter = { _fns: {} }
+
+  /**
+  * Emit an event. Optionally namespace the event. Separate the namespace and event with a `:`
+  * @name emit
+  * @param {String} event – the name of the event, with optional namespace
+  * @param {...*} data – data variables that will be passed as arguments to the event listener
+  * @example
+  * emitter.emit('example')
+  * emitter.emit('demo:test')
+  * emitter.emit('data', { example: true}, 'a string', 1)
+  */
+  emitter.emit = function emit (event) {
+    var args = [].slice.call(arguments, 1)
+    var namespaced = namespaces(event)
+    if (this._fns[event]) emitAll(event, this._fns[event], args)
+    if (namespaced) emitAll(event, namespaced, args)
+  }
+
+  /**
+  * Create en event listener.
+  * @name on
+  * @param {String} event
+  * @param {Function} fn
+  * @example
+  * emitter.on('example', function () {})
+  * emitter.on('demo', function () {})
+  */
+  emitter.on = function on (event, fn) {
+    if (typeof fn !== 'function') { throw new Error('callback required') }
+    (this._fns[event] = this._fns[event] || []).push(fn)
+  }
+
+  /**
+  * Create en event listener that fires once.
+  * @name once
+  * @param {String} event
+  * @param {Function} fn
+  * @example
+  * emitter.once('example', function () {})
+  * emitter.once('demo', function () {})
+  */
+  emitter.once = function once (event, fn) {
+    function one () {
+      fn.apply(this, arguments)
+      emitter.off(event, one)
+    }
+    this.on(event, one)
+  }
+
+  /**
+  * Stop listening to an event. Stop all listeners on an event by only passing the event name. Stop a single listener by passing that event handler as a callback.
+  * You must be explicit about what will be unsubscribed: `emitter.off('demo')` will unsubscribe an `emitter.on('demo')` listener, 
+  * `emitter.off('demo:example')` will unsubscribe an `emitter.on('demo:example')` listener
+  * @name off
+  * @param {String} event
+  * @param {Function} [fn] – the specific handler
+  * @example
+  * emitter.off('example')
+  * emitter.off('demo', function () {})
+  */
+  emitter.off = function off (event, fn) {
+    var keep = []
+
+    if (event && fn) {
+      for (var i = 0; i < this._fns.length; i++) {
+        if (this._fns[i] !== fn) {
+          keep.push(this._fns[i])
+        }
+      }
+    }
+
+    keep.length ? this._fns[event] = keep : delete this._fns[event]
+  }
+
+  function namespaces (e) {
+    var out = []
+    var args = e.split(':')
+    var fns = emitter._fns
+    Object.keys(fns).forEach(function (key) {
+      if (key === '*') out = out.concat(fns[key])
+      if (args.length === 2 && args[0] === key) out = out.concat(fns[key])
+    })
+    return out
+  }
+
+  function emitAll (e, fns, args) {
+    for (var i = 0; i < fns.length; i++) {
+      if (!fns[i]) break
+      fns[i].event = e
+      fns[i].apply(fns[i], args)
+    }
+  }
+
+  return emitter
+}
+
+},{}],9:[function(require,module,exports){
 var insert = require('insert-css');
 var normalize = require('./normalize');
 
 insert(normalize);
 
-},{"./normalize":7,"insert-css":4}],7:[function(require,module,exports){
+},{"./normalize":10,"insert-css":4}],10:[function(require,module,exports){
 module.exports = "/*! normalize.css v2.1.3 | MIT License | git.io/normalize */\n\n/* ==========================================================================\n   HTML5 display definitions\n   ========================================================================== */\n\n/**\n * Correct `block` display not defined in IE 8/9.\n */\n\narticle,\naside,\ndetails,\nfigcaption,\nfigure,\nfooter,\nheader,\nhgroup,\nmain,\nnav,\nsection,\nsummary {\n    display: block;\n}\n\n/**\n * Correct `inline-block` display not defined in IE 8/9.\n */\n\naudio,\ncanvas,\nvideo {\n    display: inline-block;\n}\n\n/**\n * Prevent modern browsers from displaying `audio` without controls.\n * Remove excess height in iOS 5 devices.\n */\n\naudio:not([controls]) {\n    display: none;\n    height: 0;\n}\n\n/**\n * Address `[hidden]` styling not present in IE 8/9.\n * Hide the `template` element in IE, Safari, and Firefox < 22.\n */\n\n[hidden],\ntemplate {\n    display: none;\n}\n\n/* ==========================================================================\n   Base\n   ========================================================================== */\n\n/**\n * 1. Set default font family to sans-serif.\n * 2. Prevent iOS text size adjust after orientation change, without disabling\n *    user zoom.\n */\n\nhtml {\n    font-family: sans-serif; /* 1 */\n    -ms-text-size-adjust: 100%; /* 2 */\n    -webkit-text-size-adjust: 100%; /* 2 */\n}\n\n/**\n * Remove default margin.\n */\n\nbody {\n    margin: 0;\n}\n\n/* ==========================================================================\n   Links\n   ========================================================================== */\n\n/**\n * Remove the gray background color from active links in IE 10.\n */\n\na {\n    background: transparent;\n}\n\n/**\n * Address `outline` inconsistency between Chrome and other browsers.\n */\n\na:focus {\n    outline: thin dotted;\n}\n\n/**\n * Improve readability when focused and also mouse hovered in all browsers.\n */\n\na:active,\na:hover {\n    outline: 0;\n}\n\n/* ==========================================================================\n   Typography\n   ========================================================================== */\n\n/**\n * Address variable `h1` font-size and margin within `section` and `article`\n * contexts in Firefox 4+, Safari 5, and Chrome.\n */\n\nh1 {\n    font-size: 2em;\n    margin: 0.67em 0;\n}\n\n/**\n * Address styling not present in IE 8/9, Safari 5, and Chrome.\n */\n\nabbr[title] {\n    border-bottom: 1px dotted;\n}\n\n/**\n * Address style set to `bolder` in Firefox 4+, Safari 5, and Chrome.\n */\n\nb,\nstrong {\n    font-weight: bold;\n}\n\n/**\n * Address styling not present in Safari 5 and Chrome.\n */\n\ndfn {\n    font-style: italic;\n}\n\n/**\n * Address differences between Firefox and other browsers.\n */\n\nhr {\n    -moz-box-sizing: content-box;\n    box-sizing: content-box;\n    height: 0;\n}\n\n/**\n * Address styling not present in IE 8/9.\n */\n\nmark {\n    background: #ff0;\n    color: #000;\n}\n\n/**\n * Correct font family set oddly in Safari 5 and Chrome.\n */\n\ncode,\nkbd,\npre,\nsamp {\n    font-family: monospace, serif;\n    font-size: 1em;\n}\n\n/**\n * Improve readability of pre-formatted text in all browsers.\n */\n\npre {\n    white-space: pre-wrap;\n}\n\n/**\n * Set consistent quote types.\n */\n\nq {\n    quotes: \"\\201C\" \"\\201D\" \"\\2018\" \"\\2019\";\n}\n\n/**\n * Address inconsistent and variable font size in all browsers.\n */\n\nsmall {\n    font-size: 80%;\n}\n\n/**\n * Prevent `sub` and `sup` affecting `line-height` in all browsers.\n */\n\nsub,\nsup {\n    font-size: 75%;\n    line-height: 0;\n    position: relative;\n    vertical-align: baseline;\n}\n\nsup {\n    top: -0.5em;\n}\n\nsub {\n    bottom: -0.25em;\n}\n\n/* ==========================================================================\n   Embedded content\n   ========================================================================== */\n\n/**\n * Remove border when inside `a` element in IE 8/9.\n */\n\nimg {\n    border: 0;\n}\n\n/**\n * Correct overflow displayed oddly in IE 9.\n */\n\nsvg:not(:root) {\n    overflow: hidden;\n}\n\n/* ==========================================================================\n   Figures\n   ========================================================================== */\n\n/**\n * Address margin not present in IE 8/9 and Safari 5.\n */\n\nfigure {\n    margin: 0;\n}\n\n/* ==========================================================================\n   Forms\n   ========================================================================== */\n\n/**\n * Define consistent border, margin, and padding.\n */\n\nfieldset {\n    border: 1px solid #c0c0c0;\n    margin: 0 2px;\n    padding: 0.35em 0.625em 0.75em;\n}\n\n/**\n * 1. Correct `color` not being inherited in IE 8/9.\n * 2. Remove padding so people aren't caught out if they zero out fieldsets.\n */\n\nlegend {\n    border: 0; /* 1 */\n    padding: 0; /* 2 */\n}\n\n/**\n * 1. Correct font family not being inherited in all browsers.\n * 2. Correct font size not being inherited in all browsers.\n * 3. Address margins set differently in Firefox 4+, Safari 5, and Chrome.\n */\n\nbutton,\ninput,\nselect,\ntextarea {\n    font-family: inherit; /* 1 */\n    font-size: 100%; /* 2 */\n    margin: 0; /* 3 */\n}\n\n/**\n * Address Firefox 4+ setting `line-height` on `input` using `!important` in\n * the UA stylesheet.\n */\n\nbutton,\ninput {\n    line-height: normal;\n}\n\n/**\n * Address inconsistent `text-transform` inheritance for `button` and `select`.\n * All other form control elements do not inherit `text-transform` values.\n * Correct `button` style inheritance in Chrome, Safari 5+, and IE 8+.\n * Correct `select` style inheritance in Firefox 4+ and Opera.\n */\n\nbutton,\nselect {\n    text-transform: none;\n}\n\n/**\n * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`\n *    and `video` controls.\n * 2. Correct inability to style clickable `input` types in iOS.\n * 3. Improve usability and consistency of cursor style between image-type\n *    `input` and others.\n */\n\nbutton,\nhtml input[type=\"button\"], /* 1 */\ninput[type=\"reset\"],\ninput[type=\"submit\"] {\n    -webkit-appearance: button; /* 2 */\n    cursor: pointer; /* 3 */\n}\n\n/**\n * Re-set default cursor for disabled elements.\n */\n\nbutton[disabled],\nhtml input[disabled] {\n    cursor: default;\n}\n\n/**\n * 1. Address box sizing set to `content-box` in IE 8/9/10.\n * 2. Remove excess padding in IE 8/9/10.\n */\n\ninput[type=\"checkbox\"],\ninput[type=\"radio\"] {\n    box-sizing: border-box; /* 1 */\n    padding: 0; /* 2 */\n}\n\n/**\n * 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome.\n * 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome\n *    (include `-moz` to future-proof).\n */\n\ninput[type=\"search\"] {\n    -webkit-appearance: textfield; /* 1 */\n    -moz-box-sizing: content-box;\n    -webkit-box-sizing: content-box; /* 2 */\n    box-sizing: content-box;\n}\n\n/**\n * Remove inner padding and search cancel button in Safari 5 and Chrome\n * on OS X.\n */\n\ninput[type=\"search\"]::-webkit-search-cancel-button,\ninput[type=\"search\"]::-webkit-search-decoration {\n    -webkit-appearance: none;\n}\n\n/**\n * Remove inner padding and border in Firefox 4+.\n */\n\nbutton::-moz-focus-inner,\ninput::-moz-focus-inner {\n    border: 0;\n    padding: 0;\n}\n\n/**\n * 1. Remove default vertical scrollbar in IE 8/9.\n * 2. Improve readability and alignment in all browsers.\n */\n\ntextarea {\n    overflow: auto; /* 1 */\n    vertical-align: top; /* 2 */\n}\n\n/* ==========================================================================\n   Tables\n   ========================================================================== */\n\n/**\n * Remove most spacing between table cells.\n */\n\ntable {\n    border-collapse: collapse;\n    border-spacing: 0;\n}\n"
 
-},{}],8:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
+var createEmitter = require('namespace-emitter')
+var isPlainObject = require('is-plain-object')
+var extend = require('xtend')
+
+/**
+* Create the store
+* @name createStoreEmitter
+* @param {function} modifier
+* @param {object} [initialState]
+* @example
+* var createStore = require('store-emitter')
+* var store = createStore(function (action, state) {
+*   if (action.type === 'change_something') {
+*     return { something: 'changed' }
+*   }
+* })
+*/
+module.exports = function createStore (modifier, initialState) {
+  if (typeof modifier !== 'function') {
+    throw new Error('first argument must be a function')
+  }
+
+  var emitter = createEmitter()
+  initialState = initialState || {}
+  var isEmitting = false
+  var state = extend(initialState)
+  store.initialState = getInitialState
+  store.getState = getState
+  store.emit = store
+  store.on = on
+  store.once = once
+  store.off = off
+  return store
+
+  /**
+  * Send an action to the store. Takes a single object parameter. Object must include a `type` property with a string value, and can contain any other properties.
+  * @name store
+  * @param {object} action
+  * @param {string} action.type
+  * @example
+  * store({
+  *   type: 'example'
+  *   exampleValue: 'anything'
+  * })
+  */
+  function store (action) {
+    if (!action || !isPlainObject(action)) {
+      throw new Error('action parameter is required and must be a plain object')
+    }
+
+    if (!action.type || typeof action.type !== 'string') {
+      throw new Error('type property of action is required and must be a string')
+    }
+
+    if (isEmitting) {
+      throw new Error('modifiers may not emit actions')
+    }
+
+    isEmitting = true
+    var oldState = extend(state)
+    state = modifier(action, oldState)
+    var newState = extend(state)
+
+    emitter.emit(action.type, action, newState, oldState)
+    isEmitting = false
+  }
+
+  /**
+  * Get the initial state of the store
+  * @name store.initialState
+  * @example
+  * var state = store.initialState()
+  */
+  function getInitialState () {
+    return initialState
+  }
+
+  /**
+   * Get the current state of the store
+   * @name store.getState
+   * @example
+   * var state = store.getState()
+   */
+  function getState () {
+    return state
+  }
+
+  /**
+  * Listen for changes to the store
+  * @name store.on
+  * @param {string} event – an action type
+  * @param {Function} callback
+  * @example
+  * store.on('*', function (action, state, oldState) {
+  *
+  * })
+  *
+  * store.on('article', function (action, state, oldState) {
+  *
+  * })
+  *
+  * store.on('article:delete', function (action, state, oldState) {
+  *
+  * })
+  */
+  function on (event, callback) {
+    emitter.on(event, callback)
+  }
+
+  /**
+  * Listen for a single change to the store
+  * @name store.once
+  * @param {string} event – an action type
+  * @param {Function} callback
+  * @example
+  * store.once('article', function (action, state, oldState) {
+  *
+  * })
+  */
+  function once (event, callback) {
+    emitter.once(event, callback)
+  }
+
+  /**
+  * Stop listening for changes to the store. Passing just the action type will remove all listeners for that action type.
+  * @name store.off
+  * @param {string} event – an action type
+  * @param {Function} [callback] – optional callback
+  * @example
+  * store.off('article', function (action, state, oldState) {
+  *
+  * })
+  */
+  function off (event, callback) {
+    emitter.off(event, callback)
+  }
+}
+
+},{"is-plain-object":5,"namespace-emitter":8,"xtend":12}],12:[function(require,module,exports){
+module.exports = extend
+
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+function extend() {
+    var target = {}
+
+    for (var i = 0; i < arguments.length; i++) {
+        var source = arguments[i]
+
+        for (var key in source) {
+            if (hasOwnProperty.call(source, key)) {
+                target[key] = source[key]
+            }
+        }
+    }
+
+    return target
+}
+
+},{}],13:[function(require,module,exports){
 var bel = {} // turns template tag into DOM elements
 var morphdom = require('morphdom') // efficiently diffs + morphs two DOM elements
 var defaultEvents = require('./update-events.js') // default events to be copied when dom elements update
@@ -595,7 +922,7 @@ module.exports.update = function (fromNode, toNode, opts) {
   }
 }
 
-},{"./update-events.js":9,"morphdom":5}],9:[function(require,module,exports){
+},{"./update-events.js":14,"morphdom":7}],14:[function(require,module,exports){
 module.exports = [
   // attribute events (can be set with attributes)
   'onclick',
@@ -633,11 +960,44 @@ module.exports = [
   'onfocusout'
 ]
 
-},{}],10:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
+'use strict';
+
+const createStore = require('store-emitter');
+const update = require('./update');
+const render = require('./render');
+
+module.exports = function app(initialState) {
+
+  function modifier(action, state) {
+    console.log(action);
+    // switch (action.type) {
+    //   case 'login':
+    //     update('.app', render(store.getState()));
+    //     console.log('XXX');
+    // }
+  }
+
+  const store = createStore(modifier, initialState);
+
+  store.on('*', function (action, state, oldState) {
+    console.log('something changed');
+  });
+
+  const actions = {
+    login: function () {
+      store({ type: 'login' });
+    },
+  };
+
+  return render(store.getState(), actions);
+};
+
+},{"./render":20,"./update":21,"store-emitter":11}],16:[function(require,module,exports){
 'use strict';
 
 const yo = require('yo-yo');
-const login = require('./login');
+// const login = require('./login');
 
 module.exports = function header(state, actions) {
   return (function () {
@@ -669,14 +1029,15 @@ module.exports = function header(state, actions) {
             }
           }
           var bel1 = document.createElement("header")
+bel1["onclick"] = arguments[1]
 var bel0 = document.createElement("span")
 appendChild(bel0, ["Hello ",arguments[0]])
-appendChild(bel1, [bel0,arguments[1]])
+appendChild(bel1, [bel0])
           return bel1
-        }(state.user.name,login(state, actions)));
+        }(state.user.name,actions.login));
 };
 
-},{"./login":13,"yo-yo":8}],11:[function(require,module,exports){
+},{"yo-yo":13}],17:[function(require,module,exports){
 'use strict';
 const yo = require('yo-yo');
 
@@ -982,15 +1343,14 @@ appendChild(bel1, ["\n    ",arguments[1],"\n    ",bel0,"\n  "])
         }(messageList(state.messages, actions),statusHeader));
 };
 
-},{"yo-yo":8}],12:[function(require,module,exports){
+},{"yo-yo":13}],18:[function(require,module,exports){
 'use strict';
 
 require('normalize-css');
+
 const yo = require('yo-yo');
 const document = require('global/document');
 const window = require('global/window');
-const update = require('./update');
-const render = require('./render');
 
 const init = function () {
   // load state from local storage
@@ -1001,7 +1361,7 @@ const init = function () {
     state = {
       user: {
         name: 'Krispin',
-        authenticated: false,
+        authenticated: true,
       },
       version: '1.0.0',
       status: 'offline',
@@ -1016,8 +1376,9 @@ const init = function () {
     };
   }
 
-  const app = render(state);
-  document.body.appendChild(app);
+  const app = require('./app');
+  document.body.appendChild(app(state));
+
 };
 
 if (window.localStorage.isLoaded) {
@@ -1026,52 +1387,7 @@ if (window.localStorage.isLoaded) {
   init.call(this);
 }
 
-},{"./render":15,"./update":16,"global/document":2,"global/window":3,"normalize-css":6,"yo-yo":8}],13:[function(require,module,exports){
-'use strict';
-const yo = require('yo-yo');
-
-module.exports = function login(state, actions) {
-  return (function () {
-          function appendChild (el, childs) {
-            for (var i = 0; i < childs.length; i++) {
-              var node = childs[i];
-              if (Array.isArray(node)) {
-                appendChild(el, node)
-                continue
-              }
-              if (typeof node === "number" ||
-                typeof node === "boolean" ||
-                node instanceof Date ||
-                node instanceof RegExp) {
-                node = node.toString()
-              }
-
-              if (typeof node === "string") {
-                if (el.lastChild && el.lastChild.nodeName === "#text") {
-                  el.lastChild.nodeValue += node
-                  continue
-                }
-                node = document.createTextNode(node)
-              }
-
-              if (node && node.nodeType) {
-                el.appendChild(node)
-              }
-            }
-          }
-          var bel2 = document.createElement("div")
-bel2.setAttribute("class", "login")
-var bel0 = document.createElement("input")
-bel0.setAttribute("type", "password")
-var bel1 = document.createElement("button")
-bel1["onclick"] = arguments[0]
-appendChild(bel1, ["OK"])
-appendChild(bel2, ["\n    ",bel0,"\n    ",bel1,"\n  "])
-          return bel2
-        }(actions.login));
-};
-
-},{"yo-yo":8}],14:[function(require,module,exports){
+},{"./app":15,"global/document":2,"global/window":3,"normalize-css":9,"yo-yo":13}],19:[function(require,module,exports){
 'use strict';
 
 // send message to me
@@ -1123,46 +1439,46 @@ appendChild(bel5, ["\n    ",bel0,"\n    ",bel2,"\n    ",bel4,"\n  "])
         }(actions.sendMessage));
 };
 
-},{"yo-yo":8}],15:[function(require,module,exports){
+},{"yo-yo":13}],20:[function(require,module,exports){
 'use strict';
 
 const yo = require('yo-yo');
+
 const header = require('./header');
 const message = require('./message');
-const update = require('./update');
 const inbox = require('./inbox');
 
-module.exports = function render(state) {
-  const actions = {
-    toggleMessage: function (id) {
-      return function () {
-        state.inbox.messages.forEach((message) => {
-          if (message.id === id) {
-            message.expanded = !message.expanded;
-            if (message.status === 'unread') {
-              message.status = 'read';
-              state.inbox.unread -= 1;
-            }
-          }
-        });
-        update('.app', render(state));
-      };
-    },
-
-    login: function (x) {
-      state.user.name = 'Lisa';
-      update('.app', render(state));
-    },
-
-    sendMessage: function (message) {
-
-    },
-  };
+module.exports = function render(state, actions) {
+  // const actions = {
+  //   toggleMessage: function (id) {
+  //     return function () {
+  //       state.inbox.messages.forEach((message) => {
+  //         if (message.id === id) {
+  //           message.expanded = !message.expanded;
+  //           if (message.status === 'unread') {
+  //             message.status = 'read';
+  //             state.inbox.unread -= 1;
+  //           }
+  //         }
+  //       });
+  //       update('.app', render(state));
+  //     };
+  //   },
+  //
+  //   login: function (x) {
+  //     state.user.name = 'Lisa';
+  //     update('.app', render(state));
+  //   },
+  //
+  //   sendMessage: function (message) {
+  //
+  //   },
+  // };
 
   //${header(state, actions)}
   //${message(state, actions)}
-  var content = '';
-  if (state.user.authenticated) content = inbox(state.inbox, actions);
+  var content = header(state, actions);
+  // if (state.user.authenticated) content = inbox(state.inbox, action);
   return (function () {
           function appendChild (el, childs) {
             for (var i = 0; i < childs.length; i++) {
@@ -1201,7 +1517,7 @@ appendChild(bel1, ["\n    ",bel0,"\n  "])
         }(content));
 };
 
-},{"./header":10,"./inbox":11,"./message":14,"./update":16,"yo-yo":8}],16:[function(require,module,exports){
+},{"./header":16,"./inbox":17,"./message":19,"yo-yo":13}],21:[function(require,module,exports){
 const document = require('global/document');
 const yo = require('yo-yo');
 
@@ -1213,4 +1529,4 @@ module.exports = function update(f, t) {
   yo.update(f, t);
 };
 
-},{"global/document":2,"yo-yo":8}]},{},[12]);
+},{"global/document":2,"yo-yo":13}]},{},[18]);

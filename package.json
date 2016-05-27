@@ -19,9 +19,9 @@
   "homepage": "https://github.com/kr1sp1n/kr1sp1n.github.io#readme",
   "devDependencies": {
     "browserify": "13.0.1",
-    "choo": "2.1.1",
     "global": "4.3.0",
     "normalize-css": "2.3.1",
+    "store-emitter": "2.2.0",
     "xhr": "2.2.0",
     "yo-yo": "1.2.0",
     "yo-yoify": "1.0.4"
