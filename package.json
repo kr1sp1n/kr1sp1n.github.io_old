@@ -23,6 +23,7 @@
     "normalize-css": "2.3.1",
     "store-emitter": "2.2.0",
     "xhr": "2.2.0",
+    "xtend": "4.0.1",
     "yo-yo": "1.2.0",
     "yo-yoify": "1.0.4"
   }

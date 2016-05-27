@@ -964,25 +964,21 @@ module.exports = [
 'use strict';
 
 const createStore = require('store-emitter');
+const extend = require('xtend');
+
 const update = require('./update');
 const render = require('./render');
 
 module.exports = function app(initialState) {
 
   function modifier(action, state) {
-    console.log(action);
-    // switch (action.type) {
-    //   case 'login':
-    //     update('.app', render(store.getState()));
-    //     console.log('XXX');
-    // }
+    switch (action.type) {
+      case 'login':
+        return extend(state, { user: { name: 'Lisa' } });
+    }
   }
 
   const store = createStore(modifier, initialState);
-
-  store.on('*', function (action, state, oldState) {
-    console.log('something changed');
-  });
 
   const actions = {
     login: function () {
@@ -990,10 +986,15 @@ module.exports = function app(initialState) {
     },
   };
 
+  store.on('*', function (action, state, oldState) {
+    console.log('something changed');
+    update('.app', render(state, actions));
+  });
+
   return render(store.getState(), actions);
 };
 
-},{"./render":20,"./update":21,"store-emitter":11}],16:[function(require,module,exports){
+},{"./render":20,"./update":21,"store-emitter":11,"xtend":12}],16:[function(require,module,exports){
 'use strict';
 
 const yo = require('yo-yo');
