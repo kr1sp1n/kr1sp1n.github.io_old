@@ -5,14 +5,20 @@ require('normalize-css');
 const yo = require('yo-yo');
 const document = require('global/document');
 const window = require('global/window');
+const createStore = require('store-emitter');
+
+const modifier = require('./modifier');
+const app = require('./app');
 
 const init = function () {
   // load state from local storage
-  var state = window.localStorage.getItem('state');
+  var state = JSON.parse(window.localStorage.getItem('state'));
 
   if (!state) {
     // generate default state if no state in local storage
     state = {
+      loggedin: false,
+      loggingin: false,
       user: {
         name: 'Krispin',
         authenticated: true,
@@ -30,8 +36,13 @@ const init = function () {
     };
   }
 
-  const app = require('./app');
-  document.body.appendChild(app(state));
+  const store = createStore(modifier, state);
+
+  store.on('*', function (action, state, oldState) {
+    window.localStorage.setItem('state', JSON.stringify(state));
+  });
+
+  document.body.appendChild(app(store));
 
 };
 

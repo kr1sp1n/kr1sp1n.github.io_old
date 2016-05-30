@@ -1,30 +1,34 @@
 'use strict';
 
-const createStore = require('store-emitter');
-const extend = require('xtend');
-
 const update = require('./update');
 const render = require('./render');
 
-module.exports = function app(initialState) {
-
-  function modifier(action, state) {
-    switch (action.type) {
-      case 'login':
-        return extend(state, { user: { name: 'Lisa' } });
-    }
-  }
-
-  const store = createStore(modifier, initialState);
+module.exports = function app(store) {
 
   const actions = {
-    login: function () {
-      store({ type: 'login' });
+    logout: function () {
+      return function () {
+        store({ type: 'logout' });
+      };
+    },
+
+    login: function (fn) {
+      return function () {
+        const data = fn();
+        store({
+          type: 'login',
+          fingerprint: data.fingerprint,
+          username: data.username,
+          password: data.password,
+        });
+        window.setTimeout(() => {
+          store({ type: 'loggedin', token: 'abc123' });
+        }, 2000);
+      };
     },
   };
 
   store.on('*', function (action, state, oldState) {
-    console.log('something changed');
     update('.app', render(state, actions));
   });
 

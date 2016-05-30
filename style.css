@@ -3,7 +3,7 @@ body {
   color: white;
 }
 
-header {
+.header {
   background: red;
   color: yellow;
   padding: 1em;
@@ -52,4 +52,8 @@ a {
 
 .message.read {
   color: grey;
+}
+
+.hidden {
+  display: none;
 }
