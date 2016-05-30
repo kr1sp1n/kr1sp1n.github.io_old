@@ -987,9 +987,9 @@ module.exports = function app(store) {
           username: data.username,
           password: data.password,
         });
-        window.setTimeout(() => {
-          store({ type: 'loggedin', token: 'abc123' });
-        }, 2000);
+        // window.setTimeout(function () {
+        store({ type: 'loggedin', token: 'abc123' });
+        // }, 2000);
       };
     },
   };
