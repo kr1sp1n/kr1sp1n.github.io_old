@@ -15,15 +15,17 @@ module.exports = function app(store) {
     login: function (fn) {
       return function () {
         const data = fn();
-        store({
-          type: 'login',
-          fingerprint: data.fingerprint,
-          username: data.username,
-          password: data.password,
+        data.fingerprint((err, result) => {
+          store({
+            type: 'login',
+            fingerprint: result,
+            username: data.username,
+            password: data.password,
+          });
+          window.setTimeout(function () {
+            store({ type: 'loggedin', token: 'abc123' });
+          }, 2000);
         });
-        // window.setTimeout(function () {
-        store({ type: 'loggedin', token: 'abc123' });
-        // }, 2000);
       };
     },
   };

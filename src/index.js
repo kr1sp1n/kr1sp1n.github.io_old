@@ -20,19 +20,19 @@ const init = function () {
       loggedin: false,
       loggingin: false,
       user: {
-        name: 'Krispin',
-        authenticated: true,
+        name: '',
+        authenticated: false,
       },
       version: '1.0.0',
       status: 'offline',
-      inbox: {
-        unread: 2,
-        messages: [
-          { id: '1', expanded: false, status: 'unread', from: 'Lisa <lisabogen@googlemail.com>', content: 'Hallo mein Liebling. Hiermit schreibe ich dir eine schöne kleine Nachricht und wollte dir nur sagen, dass ich dich unglaublich liebe!!!!!' },
-          { id: '2', expanded: false, status: 'unread', from: 'Burki', content: 'Ey Keule. Nur mal so!' },
-          { id: '3', expanded: false, status: 'read', from: 'Patrick', content: 'Na, was los? Ich wollte mal frage, ob ihr vielleicht zu meinem Geburtstag kommen wollt.' },
-        ],
-      },
+      // inbox: {
+      //   unread: 2,
+      //   messages: [
+      //     { id: '1', expanded: false, status: 'unread', from: 'Lisa <lisabogen@googlemail.com>', content: 'Hallo mein Liebling. Hiermit schreibe ich dir eine schöne kleine Nachricht und wollte dir nur sagen, dass ich dich unglaublich liebe!!!!!' },
+      //     { id: '2', expanded: false, status: 'unread', from: 'Burki', content: 'Ey Keule. Nur mal so!' },
+      //     { id: '3', expanded: false, status: 'read', from: 'Patrick', content: 'Na, was los? Ich wollte mal frage, ob ihr vielleicht zu meinem Geburtstag kommen wollt.' },
+      //   ],
+      // },
     };
   }
 

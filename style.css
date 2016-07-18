@@ -4,10 +4,11 @@ body {
 }
 
 .header {
-  background: red;
-  color: yellow;
+  background: white;
+  color: black;
   padding: 1em;
   text-align: center;
+  margin-bottom: 2em;
 }
 
 a {

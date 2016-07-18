@@ -5,18 +5,17 @@ const Fingerprint2 = require('fingerprintjs2');
 
 module.exports = function login(state, actions) {
 
-  const getFingerprint = function () {
-    // new Fingerprint2().get(function (result, components) {
-    //   console.log(result); //a hash, representing your device fingerprint
-    //   console.log(components); // an array of FP components
-    // });
-
-    return '123';
+  const getFingerprint = function (done) {
+    new Fingerprint2().get(function (result, components) {
+      // console.log(result); //a hash, representing your device fingerprint
+      // console.log(components); // an array of FP components
+      done(null, result);
+    });
   };
 
   const fn = function () {
     return {
-      fingerprint: getFingerprint(),
+      fingerprint: getFingerprint,
       username: document.querySelector('.login .username').value,
       password: document.querySelector('.login .password').value,
     };
@@ -25,7 +24,7 @@ module.exports = function login(state, actions) {
   var content = yo`<div>
     <input type="text" class="username"/>
     <input type="password" class="password"/>
-    <button onclick="${actions.login(fn)}">OK</button>
+    <button onclick="${actions.login(fn)}">Login</button>
   </div>`;
 
   var loggedinClass = '';

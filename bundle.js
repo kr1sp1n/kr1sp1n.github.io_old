@@ -981,15 +981,17 @@ module.exports = function app(store) {
     login: function (fn) {
       return function () {
         const data = fn();
-        store({
-          type: 'login',
-          fingerprint: data.fingerprint,
-          username: data.username,
-          password: data.password,
+        data.fingerprint((err, result) => {
+          store({
+            type: 'login',
+            fingerprint: result,
+            username: data.username,
+            password: data.password,
+          });
+          window.setTimeout(function () {
+            store({ type: 'loggedin', token: 'abc123' });
+          }, 2000);
         });
-        // window.setTimeout(function () {
-        store({ type: 'loggedin', token: 'abc123' });
-        // }, 2000);
       };
     },
   };
@@ -1009,8 +1011,11 @@ const yo = require('yo-yo');
 
 module.exports = function header(state, actions) {
   var loggedinClass = 'hidden';
-  if (state.loggedin) loggedinClass = '';
-  return (function () {
+  var loggedinText = '';
+
+  if (state.loggedin) {
+    loggedinClass = '';
+    loggedinText = (function () {
           function appendChild (el, childs) {
             for (var i = 0; i < childs.length; i++) {
               var node = childs[i];
@@ -1039,14 +1044,57 @@ module.exports = function header(state, actions) {
             }
           }
           var bel0 = document.createElement("span")
-appendChild(bel0, ["yeah"])
+appendChild(bel0, ["Hello ",arguments[0]])
           return bel0
-        }());
-  // return yo`<div class="row header">
-  //   <div class="two columns"> </div>
-  //   <div class="eight columns">Hello ${state.user.name}</div>
-  //   <div class="two columns"><button onclick="${actions.logout()}" class="button-primary ${loggedinClass}">Logout</div>
-  // </div>`;
+        }(state.user.name));
+  }
+
+  return (function () {
+          function appendChild (el, childs) {
+            for (var i = 0; i < childs.length; i++) {
+              var node = childs[i];
+              if (Array.isArray(node)) {
+                appendChild(el, node)
+                continue
+              }
+              if (typeof node === "number" ||
+                typeof node === "boolean" ||
+                node instanceof Date ||
+                node instanceof RegExp) {
+                node = node.toString()
+              }
+
+              if (typeof node === "string") {
+                if (el.lastChild && el.lastChild.nodeName === "#text") {
+                  el.lastChild.nodeValue += node
+                  continue
+                }
+                node = document.createTextNode(node)
+              }
+
+              if (node && node.nodeType) {
+                el.appendChild(node)
+              }
+            }
+          }
+          var bel4 = document.createElement("div")
+bel4.setAttribute("class", "row header")
+var bel0 = document.createElement("div")
+bel0.setAttribute("class", "eight columns")
+appendChild(bel0, [" "])
+var bel1 = document.createElement("div")
+bel1.setAttribute("class", "two columns")
+appendChild(bel1, [arguments[0]])
+var bel3 = document.createElement("div")
+bel3.setAttribute("class", "two columns")
+var bel2 = document.createElement("button")
+bel2["onclick"] = arguments[1]
+bel2.setAttribute("class", "button-primary " + arguments[2])
+appendChild(bel2, ["Logout"])
+appendChild(bel3, [bel2,"\n  "])
+appendChild(bel4, ["\n    ",bel0,"\n    ",bel1,"\n    ",bel3])
+          return bel4
+        }(loggedinText,actions.logout(),loggedinClass));
 };
 
 },{"yo-yo":14}],18:[function(require,module,exports){
@@ -1378,19 +1426,19 @@ const init = function () {
       loggedin: false,
       loggingin: false,
       user: {
-        name: 'Krispin',
-        authenticated: true,
+        name: '',
+        authenticated: false,
       },
       version: '1.0.0',
       status: 'offline',
-      inbox: {
-        unread: 2,
-        messages: [
-          { id: '1', expanded: false, status: 'unread', from: 'Lisa <lisabogen@googlemail.com>', content: 'Hallo mein Liebling. Hiermit schreibe ich dir eine schöne kleine Nachricht und wollte dir nur sagen, dass ich dich unglaublich liebe!!!!!' },
-          { id: '2', expanded: false, status: 'unread', from: 'Burki', content: 'Ey Keule. Nur mal so!' },
-          { id: '3', expanded: false, status: 'read', from: 'Patrick', content: 'Na, was los? Ich wollte mal frage, ob ihr vielleicht zu meinem Geburtstag kommen wollt.' },
-        ],
-      },
+      // inbox: {
+      //   unread: 2,
+      //   messages: [
+      //     { id: '1', expanded: false, status: 'unread', from: 'Lisa <lisabogen@googlemail.com>', content: 'Hallo mein Liebling. Hiermit schreibe ich dir eine schöne kleine Nachricht und wollte dir nur sagen, dass ich dich unglaublich liebe!!!!!' },
+      //     { id: '2', expanded: false, status: 'unread', from: 'Burki', content: 'Ey Keule. Nur mal so!' },
+      //     { id: '3', expanded: false, status: 'read', from: 'Patrick', content: 'Na, was los? Ich wollte mal frage, ob ihr vielleicht zu meinem Geburtstag kommen wollt.' },
+      //   ],
+      // },
     };
   }
 
@@ -1418,18 +1466,17 @@ const Fingerprint2 = require('fingerprintjs2');
 
 module.exports = function login(state, actions) {
 
-  const getFingerprint = function () {
-    // new Fingerprint2().get(function (result, components) {
-    //   console.log(result); //a hash, representing your device fingerprint
-    //   console.log(components); // an array of FP components
-    // });
-
-    return '123';
+  const getFingerprint = function (done) {
+    new Fingerprint2().get(function (result, components) {
+      // console.log(result); //a hash, representing your device fingerprint
+      // console.log(components); // an array of FP components
+      done(null, result);
+    });
   };
 
   const fn = function () {
     return {
-      fingerprint: getFingerprint(),
+      fingerprint: getFingerprint,
       username: document.querySelector('.login .username').value,
       password: document.querySelector('.login .password').value,
     };
@@ -1472,7 +1519,7 @@ bel1.setAttribute("type", "password")
 bel1.setAttribute("class", "password")
 var bel2 = document.createElement("button")
 bel2["onclick"] = arguments[0]
-appendChild(bel2, ["OK"])
+appendChild(bel2, ["Login"])
 appendChild(bel3, ["\n    ",bel0,"\n    ",bel1,"\n    ",bel2,"\n  "])
           return bel3
         }(actions.login(fn)));
@@ -1608,7 +1655,7 @@ const extend = require('xtend');
 module.exports = function modifier(action, state) {
   switch (action.type) {
     case 'login':
-      return extend(state, { loggingin: true });
+      return extend(state, { loggingin: true, user: { name: action.username } });
     case 'loggedin':
       return extend(state, { loggingin: false, loggedin: true });
     case 'logout':

@@ -5,11 +5,16 @@ const yo = require('yo-yo');
 
 module.exports = function header(state, actions) {
   var loggedinClass = 'hidden';
-  if (state.loggedin) loggedinClass = '';
-  return yo`<span>yeah</span>`;
-  // return yo`<div class="row header">
-  //   <div class="two columns"> </div>
-  //   <div class="eight columns">Hello ${state.user.name}</div>
-  //   <div class="two columns"><button onclick="${actions.logout()}" class="button-primary ${loggedinClass}">Logout</div>
-  // </div>`;
+  var loggedinText = '';
+
+  if (state.loggedin) {
+    loggedinClass = '';
+    loggedinText = yo`<span>Hello ${state.user.name}</span>`;
+  }
+
+  return yo`<div class="row header">
+    <div class="eight columns"> </div>
+    <div class="two columns">${loggedinText}</div>
+    <div class="two columns"><button onclick="${actions.logout()}" class="button-primary ${loggedinClass}">Logout</div>
+  </div>`;
 };
