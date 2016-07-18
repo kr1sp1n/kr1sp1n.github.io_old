@@ -964,8 +964,6 @@ module.exports = [
 ]
 
 },{}],16:[function(require,module,exports){
-'use strict';
-
 const update = require('./update');
 const render = require('./render');
 
@@ -1004,8 +1002,6 @@ module.exports = function app(store) {
 };
 
 },{"./render":23,"./update":24}],17:[function(require,module,exports){
-'use strict';
-
 const yo = require('yo-yo');
 // const login = require('./login');
 
@@ -1098,7 +1094,6 @@ appendChild(bel4, ["\n    ",bel0,"\n    ",bel1,"\n    ",bel3])
 };
 
 },{"yo-yo":14}],18:[function(require,module,exports){
-'use strict';
 const yo = require('yo-yo');
 
 function parseUser(user) {
@@ -1404,8 +1399,6 @@ appendChild(bel1, ["\n    ",arguments[1],"\n    ",bel0,"\n  "])
 };
 
 },{"yo-yo":14}],19:[function(require,module,exports){
-'use strict';
-
 require('normalize-css');
 
 const yo = require('yo-yo');
@@ -1459,7 +1452,6 @@ if (window.localStorage.isLoaded) {
 }
 
 },{"./app":16,"./modifier":22,"global/document":3,"global/window":4,"normalize-css":10,"store-emitter":12,"yo-yo":14}],20:[function(require,module,exports){
-'use strict';
 const yo = require('yo-yo');
 const document = require('global/document');
 const Fingerprint2 = require('fingerprintjs2');
@@ -1596,8 +1588,6 @@ appendChild(bel0, ["\n    ",arguments[1],"\n  "])
 };
 
 },{"fingerprintjs2":2,"global/document":3,"yo-yo":14}],21:[function(require,module,exports){
-'use strict';
-
 // send message to me
 const yo = require('yo-yo');
 
@@ -1648,8 +1638,6 @@ appendChild(bel5, ["\n    ",bel0,"\n    ",bel2,"\n    ",bel4,"\n  "])
 };
 
 },{"yo-yo":14}],22:[function(require,module,exports){
-'use strict';
-
 const extend = require('xtend');
 
 module.exports = function modifier(action, state) {
@@ -1664,8 +1652,6 @@ module.exports = function modifier(action, state) {
 };
 
 },{"xtend":13}],23:[function(require,module,exports){
-'use strict';
-
 const yo = require('yo-yo');
 
 const header = require('./header');
