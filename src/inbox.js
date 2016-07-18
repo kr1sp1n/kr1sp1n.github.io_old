@@ -1,4 +1,3 @@
-'use strict';
 const yo = require('yo-yo');
 
 function parseUser(user) {
@@ -23,7 +22,11 @@ function trimContent(content) {
 }
 
 function messageList(items, actions) {
-  return yo`<ul class="messages">
+  return yo
+
+
+
+`<ul class="messages">
     ${items.map(function (item) {
       var expandedContent = '';
       var header = yo`<div>

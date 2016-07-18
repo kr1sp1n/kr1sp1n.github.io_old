@@ -1,4 +1,3 @@
-'use strict';
 const yo = require('yo-yo');
 const document = require('global/document');
 const Fingerprint2 = require('fingerprintjs2');

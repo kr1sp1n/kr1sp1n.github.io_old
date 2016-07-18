@@ -1,5 +1,3 @@
-'use strict';
-
 const yo = require('yo-yo');
 const xhr = require('xhr');
 

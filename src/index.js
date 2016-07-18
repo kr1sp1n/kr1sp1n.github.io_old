@@ -1,5 +1,3 @@
-'use strict';
-
 require('normalize-css');
 
 const yo = require('yo-yo');

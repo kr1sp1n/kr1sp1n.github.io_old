@@ -1,5 +1,3 @@
-'use strict';
-
 const extend = require('xtend');
 
 module.exports = function modifier(action, state) {

@@ -1,5 +1,3 @@
-'use strict';
-
 const update = require('./update');
 const render = require('./render');
 

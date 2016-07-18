@@ -1,5 +1,3 @@
-'use strict';
-
 // send message to me
 const yo = require('yo-yo');
 
