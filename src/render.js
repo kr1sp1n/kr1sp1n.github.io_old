@@ -9,9 +9,9 @@ const login = require('./login');
 //${inbox(state.inbox, actions)}
 
 module.exports = function render(state, actions) {
-  return yo`<div class="app">
+  return yo`<div class="app container">
     ${header(state, actions)}
-    <div class="container">
+    <div class="content">
       ${login(state, actions)}
     </div>
   </div>`;
