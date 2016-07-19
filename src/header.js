@@ -11,9 +11,11 @@ module.exports = function header(state, actions) {
   }
 
   return yo`<nav class="row header">
-    <div class="ten columns">
+    <div class="row ${loggedinClass}">
+      <button onclick="${actions.logout()}" class="button-primary">Logout</button>
+    </div>
+    <div class="row">
       ${loggedinText}
     </div>
-    <div class="two columns"><button onclick="${actions.logout()}" class="button-primary ${loggedinClass}">Logout</div>
   </nav>`;
 };

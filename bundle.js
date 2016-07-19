@@ -1480,19 +1480,19 @@ module.exports = function header(state, actions) {
     }
     var bel3 = document.createElement("nav");
     bel3.setAttribute("class", "row header");
-    var bel0 = document.createElement("div");
-    bel0.setAttribute("class", "ten columns");
-    appendChild(bel0, ["\n      ", arguments[0], "\n    "]);
+    var bel1 = document.createElement("div");
+    bel1.setAttribute("class", "row " + arguments[1]);
+    var bel0 = document.createElement("button");
+    bel0["onclick"] = arguments[0];
+    bel0.setAttribute("class", "button-primary");
+    appendChild(bel0, ["Logout"]);
+    appendChild(bel1, ["\n      ", bel0, "\n    "]);
     var bel2 = document.createElement("div");
-    bel2.setAttribute("class", "two columns");
-    var bel1 = document.createElement("button");
-    bel1["onclick"] = arguments[1];
-    bel1.setAttribute("class", "button-primary " + arguments[2]);
-    appendChild(bel1, ["Logout"]);
-    appendChild(bel2, [bel1, "\n  "]);
-    appendChild(bel3, ["\n    ", bel0, "\n    ", bel2]);
+    bel2.setAttribute("class", "row");
+    appendChild(bel2, ["\n      ", arguments[2], "\n    "]);
+    appendChild(bel3, ["\n    ", bel1, "\n    ", bel2, "\n  "]);
     return bel3;
-  }(loggedinText, actions.logout(), loggedinClass);
+  }(actions.logout(), loggedinClass, loggedinText);
 };
 
 },{"yo-yo":17}],21:[function(require,module,exports){
@@ -1874,40 +1874,37 @@ module.exports = function login(state, actions) {
         }
       }
     }
-    var bel9 = document.createElement("div");
-    bel9.setAttribute("class", "login");
-    var bel6 = document.createElement("div");
-    bel6.setAttribute("class", "row");
+    var bel8 = document.createElement("div");
+    bel8.setAttribute("class", "login");
     var bel2 = document.createElement("div");
-    bel2.setAttribute("class", "six columns");
+    bel2.setAttribute("class", "row");
     var bel0 = document.createElement("label");
     bel0.setAttribute("htmlFor", "email_input");
     appendChild(bel0, ["user"]);
     var bel1 = document.createElement("input");
     bel1.setAttribute("type", "text");
     bel1.setAttribute("id", "email_input");
-    bel1.setAttribute("class", "u-full-width username");
-    appendChild(bel2, ["\n        ", bel0, "\n        ", bel1, "\n      "]);
+    bel1.setAttribute("class", "username");
+    appendChild(bel2, ["\n      ", bel0, "\n      ", bel1, "\n    "]);
     var bel5 = document.createElement("div");
-    bel5.setAttribute("class", "six columns");
+    bel5.setAttribute("class", "row");
     var bel3 = document.createElement("label");
     bel3.setAttribute("htmlFor", "password_input");
     appendChild(bel3, ["password"]);
     var bel4 = document.createElement("input");
     bel4.setAttribute("type", "password");
     bel4.setAttribute("id", "password_input");
-    bel4.setAttribute("class", "u-full-width password");
-    appendChild(bel5, ["\n        ", bel3, "\n        ", bel4, "\n      "]);
-    appendChild(bel6, ["\n      ", bel2, "\n      ", bel5, "\n    "]);
-    var bel8 = document.createElement("div");
-    bel8.setAttribute("class", "row");
-    var bel7 = document.createElement("button");
-    bel7["onclick"] = arguments[0];
-    bel7.setAttribute("class", "button-primary");
-    appendChild(bel7, ["Login"]);
-    appendChild(bel8, ["\n      ", bel7, "\n    "]);
-    appendChild(bel9, ["\n    ", bel6, "\n    ", bel8, "\n  "]);
-    return bel9;
+    bel4.setAttribute("class", "password");
+    appendChild(bel5, ["\n      ", bel3, "\n      ", bel4, "\n    "]);
+    var bel7 = document.createElement("div");
+    bel7.setAttribute("class", "row");
+    var bel6 = document.createElement("button");
+    bel6["onclick"] = arguments[0];
+    bel6.setAttribute("class", "button-primary");
+    appendChild(bel6, ["Login"]);
+    appendChild(bel7, ["\n      ", bel6, "\n    "]);
+    appendChild(bel8, ["\n    ", bel2, "\n    ", bel5, "\n    ", bel7, "\n  "]);
+    return bel8;
   }(actions.login(fn));
 
   var loggedinClass = '';

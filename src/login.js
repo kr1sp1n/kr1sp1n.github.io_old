@@ -22,14 +22,12 @@ module.exports = function login(state, actions) {
 
   var content = yo`<div class="login">
     <div class="row">
-      <div class="six columns">
-        <label for="email_input">user</label>
-        <input class="u-full-width username" type="text" id="email_input"/>
-      </div>
-      <div class="six columns">
-        <label for="password_input">password</label>
-        <input class="u-full-width password" type="password" id="password_input"/>
-      </div>
+      <label for="email_input">user</label>
+      <input class="username" type="text" id="email_input"/>
+    </div>
+    <div class="row">
+      <label for="password_input">password</label>
+      <input class="password" type="password" id="password_input"/>
     </div>
     <div class="row">
       <button class="button-primary" onclick="${actions.login(fn)}">Login</button>
