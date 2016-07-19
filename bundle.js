@@ -1478,23 +1478,20 @@ module.exports = function header(state, actions) {
         }
       }
     }
-    var bel4 = document.createElement("div");
-    bel4.setAttribute("class", "row header");
+    var bel3 = document.createElement("nav");
+    bel3.setAttribute("class", "row header");
     var bel0 = document.createElement("div");
-    bel0.setAttribute("class", "eight columns");
-    appendChild(bel0, [" "]);
-    var bel1 = document.createElement("div");
-    bel1.setAttribute("class", "two columns");
-    appendChild(bel1, [arguments[0]]);
-    var bel3 = document.createElement("div");
-    bel3.setAttribute("class", "two columns");
-    var bel2 = document.createElement("button");
-    bel2["onclick"] = arguments[1];
-    bel2.setAttribute("class", "button-primary " + arguments[2]);
-    appendChild(bel2, ["Logout"]);
-    appendChild(bel3, [bel2, "\n  "]);
-    appendChild(bel4, ["\n    ", bel0, "\n    ", bel1, "\n    ", bel3]);
-    return bel4;
+    bel0.setAttribute("class", "ten columns");
+    appendChild(bel0, ["\n      ", arguments[0], "\n    "]);
+    var bel2 = document.createElement("div");
+    bel2.setAttribute("class", "two columns");
+    var bel1 = document.createElement("button");
+    bel1["onclick"] = arguments[1];
+    bel1.setAttribute("class", "button-primary " + arguments[2]);
+    appendChild(bel1, ["Logout"]);
+    appendChild(bel2, [bel1, "\n  "]);
+    appendChild(bel3, ["\n    ", bel0, "\n    ", bel2]);
+    return bel3;
   }(loggedinText, actions.logout(), loggedinClass);
 };
 
@@ -1877,18 +1874,40 @@ module.exports = function login(state, actions) {
         }
       }
     }
-    var bel3 = document.createElement("div");
-    var bel0 = document.createElement("input");
-    bel0.setAttribute("type", "text");
-    bel0.setAttribute("class", "username");
+    var bel9 = document.createElement("div");
+    bel9.setAttribute("class", "login");
+    var bel6 = document.createElement("div");
+    bel6.setAttribute("class", "row");
+    var bel2 = document.createElement("div");
+    bel2.setAttribute("class", "six columns");
+    var bel0 = document.createElement("label");
+    bel0.setAttribute("htmlFor", "email_input");
+    appendChild(bel0, ["user"]);
     var bel1 = document.createElement("input");
-    bel1.setAttribute("type", "password");
-    bel1.setAttribute("class", "password");
-    var bel2 = document.createElement("button");
-    bel2["onclick"] = arguments[0];
-    appendChild(bel2, ["Login"]);
-    appendChild(bel3, ["\n    ", bel0, "\n    ", bel1, "\n    ", bel2, "\n  "]);
-    return bel3;
+    bel1.setAttribute("type", "text");
+    bel1.setAttribute("id", "email_input");
+    bel1.setAttribute("class", "u-full-width username");
+    appendChild(bel2, ["\n        ", bel0, "\n        ", bel1, "\n      "]);
+    var bel5 = document.createElement("div");
+    bel5.setAttribute("class", "six columns");
+    var bel3 = document.createElement("label");
+    bel3.setAttribute("htmlFor", "password_input");
+    appendChild(bel3, ["password"]);
+    var bel4 = document.createElement("input");
+    bel4.setAttribute("type", "password");
+    bel4.setAttribute("id", "password_input");
+    bel4.setAttribute("class", "u-full-width password");
+    appendChild(bel5, ["\n        ", bel3, "\n        ", bel4, "\n      "]);
+    appendChild(bel6, ["\n      ", bel2, "\n      ", bel5, "\n    "]);
+    var bel8 = document.createElement("div");
+    bel8.setAttribute("class", "row");
+    var bel7 = document.createElement("button");
+    bel7["onclick"] = arguments[0];
+    bel7.setAttribute("class", "button-primary");
+    appendChild(bel7, ["Login"]);
+    appendChild(bel8, ["\n      ", bel7, "\n    "]);
+    appendChild(bel9, ["\n    ", bel6, "\n    ", bel8, "\n  "]);
+    return bel9;
   }(actions.login(fn));
 
   var loggedinClass = '';
@@ -2061,9 +2080,9 @@ module.exports = function render(state, actions) {
       }
     }
     var bel1 = document.createElement("div");
-    bel1.setAttribute("class", "app");
+    bel1.setAttribute("class", "app container");
     var bel0 = document.createElement("div");
-    bel0.setAttribute("class", "container");
+    bel0.setAttribute("class", "row");
     appendChild(bel0, ["\n      ", arguments[0], "\n    "]);
     appendChild(bel1, ["\n    ", arguments[1], "\n    ", bel0, "\n  "]);
     return bel1;

@@ -11,7 +11,7 @@ const login = require('./login');
 module.exports = function render(state, actions) {
   return yo`<div class="app container">
     ${header(state, actions)}
-    <div class="content">
+    <div class="row">
       ${login(state, actions)}
     </div>
   </div>`;

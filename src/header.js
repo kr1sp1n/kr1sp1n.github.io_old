@@ -10,9 +10,10 @@ module.exports = function header(state, actions) {
     loggedinText = yo`<span>Hello ${state.user.name}</span>`;
   }
 
-  return yo`<div class="row header">
-    <div class="eight columns"> </div>
-    <div class="two columns">${loggedinText}</div>
+  return yo`<nav class="row header">
+    <div class="ten columns">
+      ${loggedinText}
+    </div>
     <div class="two columns"><button onclick="${actions.logout()}" class="button-primary ${loggedinClass}">Logout</div>
-  </div>`;
+  </nav>`;
 };

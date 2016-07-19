@@ -4,21 +4,13 @@ body {
 }
 
 .header {
-  background: white;
-  color: black;
-  padding: 1em;
-  text-align: center;
-  margin-bottom: 2em;
+  padding: 1rem;
 }
 
 a {
   color: white;
   background: blue;
   text-decoration: none;
-}
-
-.content {
-  padding: 1em;
 }
 
 .login {
